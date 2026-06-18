@@ -114,3 +114,8 @@ Railway is another excellent hosting provider for PostgreSQL and FastAPI.
      - Point it to build from the `/frontend` subdirectory.
      - Set the build command to `npm run build` and start command to static routing.
      - Inject `VITE_API_URL` pointing to your Backend Service URL.
+<img width="1908" height="906" alt="Screenshot 2026-06-15 175711" src="https://github.com/user-attachments/assets/69e1cc23-1b1f-4f38-be44-459262091c1e" />
+<img width="1898" height="895" alt="Screenshot 2026-06-15 175540" src="https://github.com/user-attachments/assets/f76cc5ac-b1a4-405a-90b3-3ab5bef58ca9" />
+<img width="1407" height="987" alt="Screenshot 2026-06-16 185712" src="https://github.com/user-attachments/assets/0bd78441-1b9f-41f9-8abf-66e713741128" />
+
+
