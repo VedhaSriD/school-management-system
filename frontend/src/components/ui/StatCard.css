@@ -1,0 +1,26 @@
+.ui-statcard {
+  min-width: 180px;
+}
+
+.ui-statcard__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.ui-statcard__icon {
+  font-size: var(--text-lg);
+  opacity: 0.8;
+}
+
+.ui-statcard__value {
+  color: var(--text-primary);
+}
+
+/* Tone accents — left border only, keeps the card body neutral/readable */
+.ui-statcard--neutral { border-left: 4px solid var(--brand-blue-500); }
+.ui-statcard--success { border-left: 4px solid var(--status-success); }
+.ui-statcard--warning { border-left: 4px solid var(--status-warning); }
+.ui-statcard--danger  { border-left: 4px solid var(--status-danger); }
+.ui-statcard--info    { border-left: 4px solid var(--status-info); }

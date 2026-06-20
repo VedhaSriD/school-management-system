@@ -1,0 +1,72 @@
+/* ============================================
+   MOTION TOKENS
+   Minimal, premium micro-interactions only.
+   Single source for reduced-motion compliance —
+   no per-component media queries needed.
+   ============================================ */
+
+:root {
+  /* ---- Durations ---- */
+  --motion-duration-fast: 120ms;
+  --motion-duration-medium: 200ms;
+  --motion-duration-slow: 320ms;
+
+  /* ---- Easing ---- */
+  --motion-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  /* ---- Reusable transition shorthands ---- */
+  --transition-fast: var(--motion-duration-fast) var(--motion-ease-standard);
+  --transition-medium: var(--motion-duration-medium) var(--motion-ease-standard);
+  --transition-slow: var(--motion-duration-slow) var(--motion-ease-out);
+}
+
+/* ---- Opt-in utility classes ---- */
+.transition-base {
+  transition: background-color var(--transition-fast),
+              border-color var(--transition-fast),
+              box-shadow var(--transition-fast),
+              transform var(--transition-fast);
+}
+
+.hover-lift {
+  transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.fade-in {
+  animation: fadeIn var(--motion-duration-slow) var(--motion-ease-out);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stagger-reveal > * {
+  animation: fadeIn var(--motion-duration-slow) var(--motion-ease-out) backwards;
+}
+
+.stagger-reveal > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-reveal > *:nth-child(2) { animation-delay: 40ms; }
+.stagger-reveal > *:nth-child(3) { animation-delay: 80ms; }
+.stagger-reveal > *:nth-child(4) { animation-delay: 120ms; }
+.stagger-reveal > *:nth-child(5) { animation-delay: 160ms; }
+.stagger-reveal > *:nth-child(6) { animation-delay: 200ms; }
+
+/* ---- Global reduced-motion compliance (single source) ---- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

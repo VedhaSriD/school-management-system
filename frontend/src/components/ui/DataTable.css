@@ -1,0 +1,54 @@
+.ui-datatable-wrapper {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+.ui-datatable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.ui-datatable__th {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-weight: var(--font-semibold);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-default);
+  white-space: nowrap;
+}
+
+.ui-datatable__td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.ui-datatable tbody tr:last-child .ui-datatable__td {
+  border-bottom: none;
+}
+
+.ui-datatable tbody tr:hover {
+  background: var(--bg-secondary);
+}
+
+.ui-datatable__row--clickable {
+  cursor: pointer;
+}
+
+.ui-datatable__th--left,  .ui-datatable__td--left   { text-align: left; }
+.ui-datatable__th--right, .ui-datatable__td--right  { text-align: right; }
+.ui-datatable__th--center,.ui-datatable__td--center { text-align: center; }
+
+.ui-datatable__empty {
+  text-align: center;
+  padding: var(--space-8);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}

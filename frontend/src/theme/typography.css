@@ -1,0 +1,78 @@
+/* ============================================
+   TYPOGRAPHY TOKENS
+   High readability for daily school staff use.
+   No decorative/display fonts — clarity over style.
+   ============================================ */
+
+:root {
+  /* ---- Font families ---- */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+               'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', 'Consolas', 'Liberation Mono', monospace;
+
+  /* ---- Font sizes ---- */
+  --text-xs: 0.75rem;     /* 12px — table meta, captions */
+  --text-sm: 0.875rem;    /* 14px — table body, secondary labels */
+  --text-base: 1rem;      /* 16px — default body */
+  --text-md: 1.125rem;    /* 18px — card titles */
+  --text-lg: 1.25rem;     /* 20px — section headers */
+  --text-xl: 1.5rem;      /* 24px — page titles */
+  --text-2xl: 1.875rem;   /* 30px — dashboard stat numbers */
+  --text-3xl: 2.25rem;    /* 36px — login hero / large stat */
+
+  /* ---- Font weights ---- */
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* ---- Line heights ---- */
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+
+  /* ---- Letter spacing ---- */
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+}
+
+/* ---- Base element defaults (scoped, non-invasive) ---- */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-tight);
+  color: var(--text-primary);
+}
+
+/* ---- Utility classes (opt-in, won't affect untouched components) ---- */
+.text-stat {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+.text-section-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+}
+
+.text-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+}
+
+.text-caption {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}

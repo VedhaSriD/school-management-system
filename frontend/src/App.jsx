@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { 
-  GraduationCap, 
-  Users, 
-  DollarSign, 
-  Award, 
-  FileText, 
-  Ticket, 
-  MessageSquare, 
-  LogOut, 
-  Menu, 
-  X, 
-  School 
+import {
+  GraduationCap,
+  Users,
+  DollarSign,
+  Award,
+  Ticket,
+  MessageSquare,
+  LogOut,
+  Menu,
+  School
 } from 'lucide-react';
 
-// Import dashboards
+import schoolLogo from "./assets/brand/school_pic.avif";
+
 import AdminDashboard from './components/AdminDashboard';
 import TeacherDashboard from './components/TeacherDashboard';
 import ReceptionistDashboard from './components/ReceptionistDashboard';
 import ParentDashboard from './components/ParentDashboard';
+
+import './styles/LoginScreen.css';
 
 const DashboardContent = () => {
   const { user, logout } = useAuth();
@@ -36,7 +37,11 @@ const DashboardContent = () => {
       case 'Parent':
         return <ParentDashboard currentView={currentView} />;
       default:
-        return <div>Access Denied.</div>;
+        return (
+          <div style={{ padding: '32px', color: 'var(--text-primary)' }}>
+            Access Denied.
+          </div>
+        );
     }
   };
 
@@ -44,23 +49,24 @@ const DashboardContent = () => {
     switch (user?.role) {
       case 'Admin':
         return [
-          { id: 'dashboard', label: 'Dashboard', icon: GraduationCap },
-          { id: 'students', label: 'Students', icon: Users },
-          { id: 'marks', label: 'Marks Approval', icon: Award },
+          { id: 'dashboard', label: 'Dashboard',      icon: GraduationCap },
+          { id: 'students',  label: 'Students',        icon: Users },
+          { id: 'marks',     label: 'Marks Approval',  icon: Award },
+          { id: 'finance',   label: 'Finance',          icon: DollarSign },
           { id: 'assistant', label: 'VIS AI Assistant', icon: MessageSquare }
         ];
       case 'Teacher':
         return [
-          { id: 'dashboard', label: 'Dashboard', icon: GraduationCap },
-          { id: 'students', label: 'My Class', icon: Users },
-          { id: 'marks', label: 'Marks Entry', icon: Award }
+          { id: 'dashboard', label: 'Dashboard',   icon: GraduationCap },
+          { id: 'students',  label: 'My Class',    icon: Users },
+          { id: 'marks',     label: 'Marks Entry', icon: Award }
         ];
       case 'Receptionist':
         return [
-          { id: 'dashboard', label: 'Dashboard', icon: GraduationCap },
-          { id: 'students', label: 'Students', icon: Users },
-          { id: 'fees', label: 'Fee Collection', icon: DollarSign },
-          { id: 'tickets', label: 'Hall Tickets', icon: Ticket }
+          { id: 'dashboard', label: 'Dashboard',      icon: GraduationCap },
+          { id: 'students',  label: 'Students',        icon: Users },
+          { id: 'fees',      label: 'Fee Collection',  icon: DollarSign },
+          { id: 'tickets',   label: 'Hall Tickets',    icon: Ticket }
         ];
       case 'Parent':
         return [
@@ -75,46 +81,61 @@ const DashboardContent = () => {
 
   return (
     <div className="app-container">
-      {/* Sidebar */}
-      <aside className={`sidebar ${sidebarOpen ? '' : 'collapsed'}`} style={{ display: sidebarOpen ? 'flex' : 'none' }}>
+
+      {/* ── Sidebar ── */}
+      <aside className="sidebar" style={{ display: sidebarOpen ? 'flex' : 'none' }}>
+
+        {/* Brand block with real school logo */}
         <div className="brand-section">
-          <div className="brand-logo">VIS</div>
+          <div className="brand-logo-badge">
+            <img
+  src={schoolLogo}
+  alt="Vedha International School"
+  style={{
+    width: "150px",
+    height: "150px",
+    objectFit: "contain",
+    border: "2px solid red"
+  }}
+/>
+          </div>
           <div className="brand-info">
             <h1 className="brand-name">VEDHA</h1>
             <p className="brand-sub">INTERNATIONAL</p>
           </div>
         </div>
 
-        <nav className="nav-menu">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <a
-                key={item.id}
-                className={`nav-item ${currentView === item.id ? 'active' : ''}`}
-                onClick={() => setCurrentView(item.id)}
-              >
-                <Icon size={18} />
-                <span>{item.label}</span>
-              </a>
-            );
-          })}
-        </nav>
+        {/* Navigation */}
+       <nav className="nav-menu">
+  {navItems.map((item) => {
+    const Icon = item.icon;
 
+    return (
+      <a
+        key={item.id}
+        className={`nav-item ${currentView === item.id ? 'active' : ''}`}
+        onClick={() => setCurrentView(item.id)}
+      >
+        <Icon size={18} />
+        <span>{item.label}</span>
+      </a>
+    );
+  })}
+</nav>
+        {/* User profile strip */}
         <div className="user-profile-bar">
-          <img 
-            className="user-avatar" 
-            src={`https://api.dicebear.com/7.x/initials/svg?seed=${user?.name}`} 
-            alt="avatar" 
+          <img
+            className="user-avatar"
+            src={`https://api.dicebear.com/7.x/initials/svg?seed=${user?.name}`}
+            alt="avatar"
           />
           <div className="user-info">
             <h4 className="user-name">{user?.name}</h4>
             <span className="user-role">{user?.role}</span>
           </div>
-          <button 
-            onClick={logout} 
-            className="modal-close" 
-            style={{ position: 'relative', top: 0, right: 0 }}
+          <button
+            onClick={logout}
+            className="sidebar-logout-btn"
             title="Log Out"
           >
             <LogOut size={18} />
@@ -122,30 +143,37 @@ const DashboardContent = () => {
         </div>
       </aside>
 
-      {/* Main Content Pane */}
-      <main className="main-content" style={{ marginLeft: sidebarOpen ? '260px' : '0px', transition: 'margin-left 0.3s' }}>
-        {/* Top Header */}
+      {/* ── Main content area ── */}
+      <main
+        className="main-content"
+        style={{
+          marginLeft: sidebarOpen ? '260px' : '0px',
+          transition: 'margin-left 0.25s ease'
+        }}
+      >
+        {/* Top header bar */}
         <header className="top-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <button 
-              className="btn btn-secondary btn-sm"
+          <div className="top-header__left">
+            <button
+              className="sidebar-toggle-btn"
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              style={{ padding: '8px' }}
+              aria-label="Toggle sidebar"
             >
-              <Menu size={18} />
+              <Menu size={20} />
             </button>
             <div>
               <h2 className="page-title">Vedha International School</h2>
-              <p className="page-subtitle">School Management Portal - Cloud ERP</p>
+              <p className="page-subtitle">School Management Portal — Cloud ERP</p>
             </div>
           </div>
-          <div className="glass-panel" style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <School size={16} className="text-accent" style={{ color: 'var(--accent-cyan)' }} />
-            <span style={{ fontSize: '12px', fontWeight: '600' }}>Academic Session: 2026-2027</span>
+
+          <div className="top-header__badge">
+            <School size={14} />
+            <span>Academic Session: 2026-2027</span>
           </div>
         </header>
 
-        {/* Dynamic View Body */}
+        {/* Role-based dashboard view */}
         {renderDashboard()}
       </main>
     </div>
@@ -168,53 +196,86 @@ const LoginScreen = () => {
   };
 
   return (
-    <div className="login-wrapper">
-      <div className="login-card glass-panel">
-        <div className="login-header">
-          <div className="brand-logo" style={{ margin: '0 auto 16px auto', width: '50px', height: '50px', fontSize: '24px' }}>VIS</div>
-          <h2 className="login-title">Vedha International</h2>
-          <p className="login-subtitle">Cloud School Management System</p>
+    <div className="login-page">
+
+      {/* Left hero — school branding */}
+      <div className="login-hero">
+        <div className="login-hero__logo-frame">
+          <img
+            src={schoolLogo}
+            alt="Vedha International School"
+            className="login-hero__logo-img"
+          />
         </div>
+        <h1 className="login-hero__title">Vedha International School</h1>
+        <p className="login-hero__subtitle">Cloud School Management Portal</p>
+        <ul className="login-hero__points">
+          <li>Unified dashboards for Admin, Teacher &amp; Receptionist</li>
+          <li>Secure, role-based access control</li>
+          <li>Real-time fee, attendance &amp; academic records</li>
+        </ul>
+      </div>
 
-        <form onSubmit={handleSubmit}>
-          {error && (
-            <div className="status-badge status-inactive" style={{ width: '100%', marginBottom: '16px', textAlign: 'center', padding: '8px' }}>
-              {error}
+      {/* Right panel — login form */}
+      <div className="login-panel">
+        <div className="login-card">
+          <div className="login-card__header">
+            <h2 className="login-card__title">Sign In</h2>
+            <p className="login-card__subtitle">Enter your credentials to continue</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="login-form">
+            {error && (
+              <div className="login-form__error" role="alert">
+                {error}
+              </div>
+            )}
+
+            <div className="login-form__group">
+              <label className="login-form__label" htmlFor="login-username">
+                Username
+              </label>
+              <input
+                id="login-username"
+                type="text"
+                className="login-form__input"
+                placeholder="Enter username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                autoComplete="username"
+              />
             </div>
-          )}
-          <div className="form-group" style={{ textAlign: 'left' }}>
-            <label className="form-label">Username</label>
-            <input 
-              type="text" 
-              className="form-control" 
-              placeholder="Enter username" 
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
 
-          <div className="form-group" style={{ textAlign: 'left' }}>
-            <label className="form-label">Password</label>
-            <input 
-              type="password" 
-              className="form-control" 
-              placeholder="Enter password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+            <div className="login-form__group">
+              <label className="login-form__label" htmlFor="login-password">
+                Password
+              </label>
+              <input
+                id="login-password"
+                type="password"
+                className="login-form__input"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+              />
+            </div>
 
-          <button 
-            type="submit" 
-            className="btn btn-primary" 
-            style={{ width: '100%', marginTop: '8px', justifyContent: 'center' }}
-            disabled={loading}
-          >
-            {loading ? 'Logging in...' : 'Sign In'}
-          </button>
-        </form>
+            <button
+              type="submit"
+              className="login-form__submit"
+              disabled={loading}
+            >
+              {loading ? 'Signing in…' : 'Sign In'}
+            </button>
+          </form>
+
+          <p className="login-card__footnote">
+            Vedha International School &middot; Academic Session 2026-2027
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -114,8 +114,11 @@ Railway is another excellent hosting provider for PostgreSQL and FastAPI.
      - Point it to build from the `/frontend` subdirectory.
      - Set the build command to `npm run build` and start command to static routing.
      - Inject `VITE_API_URL` pointing to your Backend Service URL.
-<img width="1908" height="906" alt="Screenshot 2026-06-15 175711" src="https://github.com/user-attachments/assets/69e1cc23-1b1f-4f38-be44-459262091c1e" />
-<img width="1898" height="895" alt="Screenshot 2026-06-15 175540" src="https://github.com/user-attachments/assets/f76cc5ac-b1a4-405a-90b3-3ab5bef58ca9" />
-<img width="1407" height="987" alt="Screenshot 2026-06-16 185712" src="https://github.com/user-attachments/assets/0bd78441-1b9f-41f9-8abf-66e713741128" />
+     - 
+<img width="1823" height="808" alt="Screenshot 2026-06-20 131621" src="https://github.com/user-attachments/assets/04c42c40-9ce6-4cdf-90d6-f2de41ff6fa3" />
+<img width="1918" height="912" alt="Screenshot 2026-06-20 190139" src="https://github.com/user-attachments/assets/7024251e-94e2-4c0a-a2cd-6ee20b67e415" />
+<img width="1893" height="882" alt="Screenshot 2026-06-20 190107" src="https://github.com/user-attachments/assets/b4dc8f4c-cff6-4e51-b6d6-08df92d9c327" />
+<img width="1882" height="900" alt="Screenshot 2026-06-20 190003" src="https://github.com/user-attachments/assets/10c6322b-3f51-47f6-b0de-6cd778952397" />
+
 
 

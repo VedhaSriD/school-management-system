@@ -1,0 +1,261 @@
+/* ============================================
+   TEACHER DASHBOARD — visual layer only
+   Depends on theme/tokens.css, typography.css, motion.css,
+   components/ui/* styles, and LoginScreen.css (.login-form__input/__label)
+   ============================================ */
+
+.teacher-view {
+  padding: var(--space-6);
+}
+
+.teacher-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.teacher-dashboard-grid,
+.teacher-marks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: var(--space-5);
+}
+
+.teacher-panel__title {
+  margin: 0 0 var(--space-4) 0;
+}
+
+.teacher-rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.teacher-rules-list p {
+  margin: 0;
+  line-height: var(--leading-relaxed);
+}
+
+.teacher-rules-list strong {
+  color: var(--text-primary);
+}
+
+/* ---- Table card ---- */
+.teacher-table-card {
+  margin-top: var(--space-2);
+}
+
+.teacher-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.teacher-id-cell {
+  color: var(--brand-blue-700);
+}
+
+.teacher-status-badge {
+  display: inline-block;
+  padding: 3px var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  text-transform: capitalize;
+}
+
+.teacher-status-badge--active,
+.teacher-status-badge--approved {
+  background: var(--status-success-bg);
+  color: var(--status-success);
+}
+
+.teacher-status-badge--inactive,
+.teacher-status-badge--draft {
+  background: var(--status-warning-bg);
+  color: var(--status-warning);
+}
+
+.teacher-status-badge--submitted {
+  background: var(--status-info-bg);
+  color: var(--status-info);
+}
+
+/* ---- Modal ---- */
+.teacher-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 36, 48, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  z-index: var(--z-modal);
+}
+
+.teacher-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+.teacher-modal-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.teacher-modal-close:hover {
+  background: var(--bg-muted);
+}
+
+.teacher-modal-title {
+  font-size: var(--text-lg);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-5) 0;
+  padding-right: var(--space-8);
+}
+
+/* ---- Form layout ---- */
+.teacher-form,
+.teacher-marks-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.teacher-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+@media (max-width: 560px) {
+  .teacher-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.teacher-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  text-align: left;
+}
+
+.teacher-form-footer {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+  margin-top: var(--space-2);
+}
+
+.teacher-form-banner {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  text-align: center;
+  font-weight: var(--font-medium);
+}
+
+.teacher-form-banner--error {
+  background: var(--status-danger-bg);
+  color: var(--status-danger);
+  border: 1px solid var(--status-danger);
+}
+
+.teacher-form-banner--success {
+  background: var(--status-success-bg);
+  color: var(--status-success);
+  border: 1px solid var(--status-success);
+}
+
+/* ---- Saved marks sheets ---- */
+.teacher-marks-sheets {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+.teacher-marks-sheet {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.teacher-marks-sheet__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.teacher-marks-sheet__name {
+  color: var(--brand-blue-700);
+  font-size: var(--text-sm);
+}
+
+.teacher-exam-block {
+  margin-bottom: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-2);
+}
+
+.teacher-exam-block__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.teacher-exam-block__label {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--text-secondary);
+}
+
+.teacher-exam-block__scores {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+
+.teacher-score-tile {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+  text-align: center;
+}
+
+.teacher-score-tile__value {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+}
+
+.teacher-score-tile__meta {
+  font-size: 10px;
+  color: var(--text-muted);
+}

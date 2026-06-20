@@ -9,6 +9,11 @@ import {
   Check, 
   Loader 
 } from 'lucide-react';
+import Card from './ui/Card';
+import StatCard from './ui/StatCard';
+import Button from './ui/Button';
+import DataTable from './ui/DataTable';
+import '../styles/TeacherDashboard.css';
 
 const TeacherDashboard = ({ currentView }) => {
   const { user, authenticatedFetch, API_URL } = useAuth();
@@ -254,92 +259,64 @@ const TeacherDashboard = ({ currentView }) => {
 
   if (currentView === 'dashboard') {
     return (
-      <div>
-        <div className="stats-grid">
-          <div className="stat-card glass-panel accent-cyan">
-            <div className="stat-info">
-              <span className="stat-label">Assigned Class</span>
-              <span className="stat-val">{stats?.class_name || 'N/A'}</span>
-            </div>
-            <div className="stat-icon-wrapper"><Users size={24} /></div>
-          </div>
-
-          <div className="stat-card glass-panel accent-purple">
-            <div className="stat-info">
-              <span className="stat-label">Total Students</span>
-              <span className="stat-val">{stats?.total_students || 0}</span>
-            </div>
-            <div className="stat-icon-wrapper"><Users size={24} /></div>
-          </div>
-
-          <div className="stat-card glass-panel accent-green">
-            <div className="stat-info">
-              <span className="stat-label">Active Roster</span>
-              <span className="stat-val">{stats?.active_students || 0}</span>
-            </div>
-            <div className="stat-icon-wrapper"><Users size={24} /></div>
-          </div>
-
-          <div className="stat-card glass-panel accent-amber">
-            <div className="stat-info">
-              <span className="stat-label">Pending Reviews</span>
-              <span className="stat-val">{stats?.pending_marks_entries_count || 0}</span>
-            </div>
-            <div className="stat-icon-wrapper"><Award size={24} /></div>
-          </div>
+      <div className="teacher-view">
+        <div className="teacher-stats-grid stagger-reveal">
+          <StatCard
+            label="Assigned Class"
+            value={stats?.class_name || 'N/A'}
+            icon={<Users size={20} />}
+            tone="info"
+          />
+          <StatCard
+            label="Total Students"
+            value={stats?.total_students || 0}
+            icon={<Users size={20} />}
+            tone="neutral"
+          />
+          <StatCard
+            label="Active Roster"
+            value={stats?.active_students || 0}
+            icon={<Users size={20} />}
+            tone="success"
+          />
+          <StatCard
+            label="Pending Reviews"
+            value={stats?.pending_marks_entries_count || 0}
+            icon={<Award size={20} />}
+            tone="warning"
+          />
         </div>
 
-        <div className="dashboard-grid">
-          <div className="data-panel glass-panel">
-            <div className="panel-header">
-              <h3 className="panel-title">Recent Marks Activity</h3>
-            </div>
-            <div className="table-wrapper">
-              <table className="custom-table">
-                <thead>
-                  <tr>
-                    <th>Student</th>
-                    <th>Exam</th>
-                    <th>Subject</th>
-                    <th>Marks</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats?.recent_marks && stats.recent_marks.map((m) => (
-                    <tr key={m.id}>
-                      <td><strong>{m.student_name}</strong></td>
-                      <td>{m.exam_type}</td>
-                      <td>{m.subject}</td>
-                      <td>{m.marks_obtained} / 100</td>
-                      <td>
-                        <span className={`status-badge status-${m.status}`}>{m.status}</span>
-                      </td>
-                    </tr>
-                  ))}
-                  {(!stats?.recent_marks || stats.recent_marks.length === 0) && (
-                    <tr>
-                      <td colSpan="5" style={{ textAlign: 'center', padding: '16px', color: 'var(--text-muted)' }}>
-                        No recent marks activity in this class.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+        <div className="teacher-dashboard-grid">
+          <Card elevated>
+            <h3 className="text-section-title teacher-panel__title">Recent Marks Activity</h3>
+            <DataTable
+              columns={[
+                { key: 'student_name', header: 'Student', render: (m) => <strong>{m.student_name}</strong> },
+                { key: 'exam_type', header: 'Exam' },
+                { key: 'subject', header: 'Subject' },
+                { key: 'marks_obtained', header: 'Marks', render: (m) => `${m.marks_obtained} / 100` },
+                {
+                  key: 'status',
+                  header: 'Status',
+                  render: (m) => <span className={`teacher-status-badge teacher-status-badge--${m.status}`}>{m.status}</span>,
+                },
+              ]}
+              data={stats?.recent_marks || []}
+              rowKey="id"
+              emptyMessage="No recent marks activity in this class."
+            />
+          </Card>
 
-          <div className="data-panel glass-panel">
-            <div className="panel-header">
-              <h3 className="panel-title">Grading Rules</h3>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '12px', color: 'var(--text-muted)' }}>
+          <Card elevated>
+            <h3 className="text-section-title teacher-panel__title">Grading Rules</h3>
+            <div className="teacher-rules-list">
               <p>1. Marks are submitted as <strong>draft</strong> first.</p>
               <p>2. Teachers can edit draft records up to <strong>2 times</strong>. The third edit locks the record, requiring Admin intervention.</p>
               <p>3. Once draft marks are complete for a student's exam, submit them. The status changes to <strong>submitted</strong>.</p>
-              <p>4. After the Admin **approves** the marks, parents can immediately view them on their portal.</p>
+              <p>4. After the Admin approves the marks, parents can immediately view them on their portal.</p>
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     );
@@ -347,92 +324,78 @@ const TeacherDashboard = ({ currentView }) => {
 
   if (currentView === 'students') {
     return (
-      <div className="data-panel glass-panel">
-        <div className="panel-header">
-          <div>
-            <h3 className="panel-title">My Classroom Enrollment</h3>
-            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Class list for: {stats?.class_name}</span>
+      <div className="teacher-view">
+        <Card elevated className="teacher-table-card">
+          <div className="teacher-panel__header">
+            <div>
+              <h3 className="text-section-title teacher-panel__title">My Classroom Enrollment</h3>
+              <span className="text-caption">Class list for: {stats?.class_name}</span>
+            </div>
+            <Button variant="primary" size="sm" onClick={handleOpenAddModal}>
+              <Plus size={16} /> Add Student
+            </Button>
           </div>
-          <button className="btn btn-primary btn-sm" onClick={handleOpenAddModal}>
-            <Plus size={16} /> Add Student
-          </button>
-        </div>
 
-        <div className="table-wrapper">
-          <table className="custom-table">
-            <thead>
-              <tr>
-                <th>Student ID</th>
-                <th>Admission No</th>
-                <th>Name</th>
-                <th>Gender</th>
-                <th>Father's Name</th>
-                <th>Contact</th>
-                <th>Family ID</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((s) => (
-                <tr key={s.id}>
-                  <td><strong style={{ color: 'var(--accent-cyan)' }}>{s.student_id}</strong></td>
-                  <td>{s.admission_number}</td>
-                  <td>{s.name}</td>
-                  <td>{s.gender}</td>
-                  <td>{s.father_name}</td>
-                  <td>{s.contact_number}</td>
-                  <td>{s.family_id}</td>
-                  <td>
-                    <span className={`status-badge status-${s.status}`}>{s.status}</span>
-                  </td>
-                  <td>
-                    <button className="btn btn-secondary btn-sm" onClick={() => handleOpenEditModal(s)} style={{ padding: '6px' }} title="Edit">
-                      <Edit size={14} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {students.length === 0 && (
-                <tr>
-                  <td colSpan="9" style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
-                    No students enrolled in your class yet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+          <DataTable
+            columns={[
+              { key: 'student_id', header: 'Student ID', render: (s) => <strong className="teacher-id-cell">{s.student_id}</strong> },
+              { key: 'admission_number', header: 'Admission No' },
+              { key: 'name', header: 'Name' },
+              { key: 'gender', header: 'Gender' },
+              { key: 'father_name', header: "Father's Name" },
+              { key: 'contact_number', header: 'Contact' },
+              { key: 'family_id', header: 'Family ID' },
+              {
+                key: 'status',
+                header: 'Status',
+                render: (s) => <span className={`teacher-status-badge teacher-status-badge--${s.status}`}>{s.status}</span>,
+              },
+              {
+                key: 'actions',
+                header: 'Actions',
+                align: 'center',
+                render: (s) => (
+                  <Button variant="outline" size="sm" onClick={() => handleOpenEditModal(s)} title="Edit">
+                    <Edit size={14} />
+                  </Button>
+                ),
+              },
+            ]}
+            data={students}
+            rowKey="id"
+            emptyMessage="No students enrolled in your class yet."
+          />
+        </Card>
 
         {/* PREVENT OVERLAPS: MODAL POPUP */}
         {showFormModal && (
-          <div className="modal-overlay">
-            <div className="modal-content glass-panel">
-              <button className="modal-close" onClick={() => setShowFormModal(false)}>
+          <div className="teacher-modal-overlay">
+            <Card elevated className="teacher-modal-content">
+              <button className="teacher-modal-close" onClick={() => setShowFormModal(false)}>
                 <X size={20} />
               </button>
-              <h3 style={{ marginBottom: '24px', color: 'var(--accent-cyan)' }}>
+              <h3 className="teacher-modal-title">
                 {editingStudent ? `Modify Class Student: ${editingStudent.student_id}` : 'Enroll New Student in My Class'}
               </h3>
               
-              <form onSubmit={handleFormSubmit}>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Admission Number</label>
+              <form onSubmit={handleFormSubmit} className="teacher-form">
+                <div className="teacher-form-row">
+                  <div className="teacher-form-group">
+                    <label className="login-form__label">Admission Number</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.admission_number}
                       onChange={(e) => setStudentForm({...studentForm, admission_number: e.target.value})}
                       required
                       disabled={editingStudent}
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Student Name</label>
+                  <div className="teacher-form-group">
+                    <label className="login-form__label">Student Name</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.name}
                       onChange={(e) => setStudentForm({...studentForm, name: e.target.value})}
                       required
@@ -440,21 +403,21 @@ const TeacherDashboard = ({ currentView }) => {
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Date of Birth</label>
+                <div className="teacher-form-row">
+                  <div className="teacher-form-group">
+                    <label className="login-form__label">Date of Birth</label>
                     <input 
                       type="date" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.date_of_birth}
                       onChange={(e) => setStudentForm({...studentForm, date_of_birth: e.target.value})}
                       required
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Gender</label>
+                  <div className="teacher-form-group">
+                    <label className="login-form__label">Gender</label>
                     <select 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.gender}
                       onChange={(e) => setStudentForm({...studentForm, gender: e.target.value})}
                     >
@@ -465,22 +428,22 @@ const TeacherDashboard = ({ currentView }) => {
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Father's Name</label>
+                <div className="teacher-form-row">
+                  <div className="teacher-form-group">
+                    <label className="login-form__label">Father's Name</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.father_name}
                       onChange={(e) => setStudentForm({...studentForm, father_name: e.target.value})}
                       required
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Mother's Name</label>
+                  <div className="teacher-form-group">
+                    <label className="login-form__label">Mother's Name</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.mother_name}
                       onChange={(e) => setStudentForm({...studentForm, mother_name: e.target.value})}
                       required
@@ -488,33 +451,33 @@ const TeacherDashboard = ({ currentView }) => {
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Residential Address</label>
+                <div className="teacher-form-group">
+                  <label className="login-form__label">Residential Address</label>
                   <input 
                     type="text" 
-                    className="form-control" 
+                    className="login-form__input" 
                     value={studentForm.address}
                     onChange={(e) => setStudentForm({...studentForm, address: e.target.value})}
                     required
                   />
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Contact Number</label>
+                <div className="teacher-form-row">
+                  <div className="teacher-form-group">
+                    <label className="login-form__label">Contact Number</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.contact_number}
                       onChange={(e) => setStudentForm({...studentForm, contact_number: e.target.value})}
                       required
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Emergency Contact</label>
+                  <div className="teacher-form-group">
+                    <label className="login-form__label">Emergency Contact</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.emergency_contact}
                       onChange={(e) => setStudentForm({...studentForm, emergency_contact: e.target.value})}
                       required
@@ -522,43 +485,43 @@ const TeacherDashboard = ({ currentView }) => {
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Bus Number (Optional)</label>
+                <div className="teacher-form-row">
+                  <div className="teacher-form-group">
+                    <label className="login-form__label">Bus Number (Optional)</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.bus_number}
                       onChange={(e) => setStudentForm({...studentForm, bus_number: e.target.value})}
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Bus Route (Optional)</label>
+                  <div className="teacher-form-group">
+                    <label className="login-form__label">Bus Route (Optional)</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.bus_route}
                       onChange={(e) => setStudentForm({...studentForm, bus_route: e.target.value})}
                     />
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Annual Tuition Fee (₹)</label>
+                <div className="teacher-form-row">
+                  <div className="teacher-form-group">
+                    <label className="login-form__label">Annual Tuition Fee (₹)</label>
                     <input 
                       type="number" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.annual_fee}
                       onChange={(e) => setStudentForm({...studentForm, annual_fee: e.target.value})}
                       required
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Family ID</label>
+                  <div className="teacher-form-group">
+                    <label className="login-form__label">Family ID</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.family_id}
                       onChange={(e) => setStudentForm({...studentForm, family_id: e.target.value})}
                       required
@@ -566,12 +529,12 @@ const TeacherDashboard = ({ currentView }) => {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '24px' }}>
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowFormModal(false)}>Cancel</button>
-                  <button type="submit" className="btn btn-primary">Enroll Student</button>
+                <div className="teacher-form-footer">
+                  <Button type="button" variant="outline" onClick={() => setShowFormModal(false)}>Cancel</Button>
+                  <Button type="submit" variant="primary">Enroll Student</Button>
                 </div>
               </form>
-            </div>
+            </Card>
           </div>
         )}
       </div>
@@ -580,158 +543,156 @@ const TeacherDashboard = ({ currentView }) => {
 
   if (currentView === 'marks') {
     return (
-      <div className="dashboard-grid">
-        {/* Marks Entry Panel */}
-        <div className="data-panel glass-panel">
-          <div className="panel-header">
-            <h3 className="panel-title">Marks Entry Ledger</h3>
-          </div>
-          
-          <form onSubmit={handleEnterMarks}>
-            {marksError && (
-              <div className="status-badge status-inactive" style={{ width: '100%', marginBottom: '16px', padding: '8px', textAlign: 'center' }}>
-                {marksError}
-              </div>
-            )}
-            {marksSuccess && (
-              <div className="status-badge status-active" style={{ width: '100%', marginBottom: '16px', padding: '8px', textAlign: 'center' }}>
-                {marksSuccess}
-              </div>
-            )}
-
-            <div className="form-group">
-              <label className="form-label">Student</label>
-              <select 
-                className="form-control" 
-                value={selectedStudent} 
-                onChange={(e) => {
-                  setSelectedStudent(e.target.value);
-                  setMarksError(null);
-                  setMarksSuccess(null);
-                }}
-                required
-              >
-                <option value="">-- Select Student --</option>
-                {students.map(s => (
-                  <option key={s.id} value={s.id}>{s.name} ({s.student_id})</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label className="form-label">Exam Type</label>
-                <select 
-                  className="form-control" 
-                  value={selectedExam} 
-                  onChange={(e) => setSelectedExam(e.target.value)}
-                >
-                  <option value="FA-1">FA-1</option>
-                  <option value="FA-2">FA-2</option>
-                  <option value="SA-1">SA-1</option>
-                  <option value="FA-3">FA-3</option>
-                  <option value="FA-4">FA-4</option>
-                  <option value="SA-2">SA-2</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Subject</label>
-                <select 
-                  className="form-control" 
-                  value={selectedSubject} 
-                  onChange={(e) => setSelectedSubject(e.target.value)}
-                >
-                  <option value="Telugu">Telugu</option>
-                  <option value="Hindi">Hindi</option>
-                  <option value="English">English</option>
-                  <option value="Maths">Maths</option>
-                  <option value="Science">Science</option>
-                  <option value="Social">Social</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Marks Obtained (out of 100)</label>
-              <input 
-                type="number" 
-                className="form-control" 
-                min="0" 
-                max="100" 
-                placeholder="Enter score"
-                value={scoreInput}
-                onChange={(e) => setScoreInput(e.target.value)}
-                required
-              />
-            </div>
-
-            <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
-              Save Score
-            </button>
-          </form>
-        </div>
-
-        {/* Existing Marks in Class */}
-        <div className="data-panel glass-panel">
-          <div className="panel-header">
-            <h3 className="panel-title">Saved Marks Sheets</h3>
-          </div>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxHeight: '450px', overflowY: 'auto' }}>
-            {students.map(s => {
-              const studentMarks = marks.filter(m => m.student_id === s.id);
-              if (studentMarks.length === 0) return null;
-              
-              // Group marks by exam type
-              const examsList = ['FA-1', 'FA-2', 'SA-1', 'FA-3', 'FA-4', 'SA-2'];
-              
-              return (
-                <div key={s.id} className="glass-panel" style={{ padding: '16px', background: 'rgba(255,255,255,0.01)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                    <strong style={{ fontSize: '13px', color: 'var(--accent-cyan)' }}>{s.name}</strong>
-                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{s.student_id}</span>
-                  </div>
-                  
-                  {examsList.map(ex => {
-                    const examMarks = studentMarks.filter(m => m.exam_type === ex);
-                    if (examMarks.length === 0) return null;
-                    
-                    const isAllDraft = examMarks.every(m => m.status === 'draft');
-                    
-                    return (
-                      <div key={ex} style={{ marginBottom: '12px', borderTop: '1px solid var(--border-light)', paddingTop: '8px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                          <span style={{ fontSize: '11px', fontWeight: '600' }}>{ex} Marks</span>
-                          {isAllDraft && (
-                            <button 
-                              className="btn btn-secondary btn-sm" 
-                              onClick={() => handleSubmitExamForApproval(s.id, ex)}
-                              style={{ padding: '2px 6px', fontSize: '9px' }}
-                            >
-                              Submit {ex}
-                            </button>
-                          )}
-                        </div>
-                        
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-                          {examMarks.map(em => (
-                            <div key={em.id} style={{ background: 'rgba(0,0,0,0.1)', padding: '6px', borderRadius: '4px', textAlign: 'center' }}>
-                              <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{em.subject}</div>
-                              <div style={{ fontSize: '12px', fontWeight: '700' }}>{em.marks_obtained}</div>
-                              <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>
-                                {em.status} ({em.edit_count}/2)
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
+      <div className="teacher-view">
+        <div className="teacher-marks-grid">
+          {/* Marks Entry Panel */}
+          <Card elevated>
+            <h3 className="text-section-title teacher-panel__title">Marks Entry Ledger</h3>
+            
+            <form onSubmit={handleEnterMarks} className="teacher-marks-form">
+              {marksError && (
+                <div className="teacher-form-banner teacher-form-banner--error">
+                  {marksError}
                 </div>
-              );
-            })}
-          </div>
+              )}
+              {marksSuccess && (
+                <div className="teacher-form-banner teacher-form-banner--success">
+                  {marksSuccess}
+                </div>
+              )}
+
+              <div className="teacher-form-group">
+                <label className="login-form__label">Student</label>
+                <select 
+                  className="login-form__input" 
+                  value={selectedStudent} 
+                  onChange={(e) => {
+                    setSelectedStudent(e.target.value);
+                    setMarksError(null);
+                    setMarksSuccess(null);
+                  }}
+                  required
+                >
+                  <option value="">-- Select Student --</option>
+                  {students.map(s => (
+                    <option key={s.id} value={s.id}>{s.name} ({s.student_id})</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="teacher-form-row">
+                <div className="teacher-form-group">
+                  <label className="login-form__label">Exam Type</label>
+                  <select 
+                    className="login-form__input" 
+                    value={selectedExam} 
+                    onChange={(e) => setSelectedExam(e.target.value)}
+                  >
+                    <option value="FA-1">FA-1</option>
+                    <option value="FA-2">FA-2</option>
+                    <option value="SA-1">SA-1</option>
+                    <option value="FA-3">FA-3</option>
+                    <option value="FA-4">FA-4</option>
+                    <option value="SA-2">SA-2</option>
+                  </select>
+                </div>
+
+                <div className="teacher-form-group">
+                  <label className="login-form__label">Subject</label>
+                  <select 
+                    className="login-form__input" 
+                    value={selectedSubject} 
+                    onChange={(e) => setSelectedSubject(e.target.value)}
+                  >
+                    <option value="Telugu">Telugu</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="English">English</option>
+                    <option value="Maths">Maths</option>
+                    <option value="Science">Science</option>
+                    <option value="Social">Social</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="teacher-form-group">
+                <label className="login-form__label">Marks Obtained (out of 100)</label>
+                <input 
+                  type="number" 
+                  className="login-form__input" 
+                  min="0" 
+                  max="100" 
+                  placeholder="Enter score"
+                  value={scoreInput}
+                  onChange={(e) => setScoreInput(e.target.value)}
+                  required
+                />
+              </div>
+
+              <Button type="submit" variant="primary" fullWidth>
+                Save Score
+              </Button>
+            </form>
+          </Card>
+
+          {/* Existing Marks in Class */}
+          <Card elevated>
+            <h3 className="text-section-title teacher-panel__title">Saved Marks Sheets</h3>
+            
+            <div className="teacher-marks-sheets">
+              {students.map(s => {
+                const studentMarks = marks.filter(m => m.student_id === s.id);
+                if (studentMarks.length === 0) return null;
+                
+                // Group marks by exam type
+                const examsList = ['FA-1', 'FA-2', 'SA-1', 'FA-3', 'FA-4', 'SA-2'];
+                
+                return (
+                  <div key={s.id} className="teacher-marks-sheet">
+                    <div className="teacher-marks-sheet__header">
+                      <strong className="teacher-marks-sheet__name">{s.name}</strong>
+                      <span className="text-caption">{s.student_id}</span>
+                    </div>
+                    
+                    {examsList.map(ex => {
+                      const examMarks = studentMarks.filter(m => m.exam_type === ex);
+                      if (examMarks.length === 0) return null;
+                      
+                      const isAllDraft = examMarks.every(m => m.status === 'draft');
+                      
+                      return (
+                        <div key={ex} className="teacher-exam-block">
+                          <div className="teacher-exam-block__header">
+                            <span className="teacher-exam-block__label">{ex} Marks</span>
+                            {isAllDraft && (
+                              <Button 
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleSubmitExamForApproval(s.id, ex)}
+                              >
+                                Submit {ex}
+                              </Button>
+                            )}
+                          </div>
+                          
+                          <div className="teacher-exam-block__scores">
+                            {examMarks.map(em => (
+                              <div key={em.id} className="teacher-score-tile">
+                                <div className="text-caption">{em.subject}</div>
+                                <div className="teacher-score-tile__value">{em.marks_obtained}</div>
+                                <div className="teacher-score-tile__meta">
+                                  {em.status} ({em.edit_count}/2)
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
         </div>
       </div>
     );

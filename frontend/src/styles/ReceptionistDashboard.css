@@ -1,0 +1,225 @@
+/* ============================================
+   RECEPTIONIST DASHBOARD — visual layer only
+   Depends on theme/tokens.css, typography.css, motion.css,
+   components/ui/* styles, and LoginScreen.css (.login-form__input/__label)
+   ============================================ */
+
+.recep-view {
+  padding: var(--space-6);
+}
+
+.recep-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.recep-dashboard-grid,
+.recep-fees-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: var(--space-5);
+}
+
+.recep-panel__title {
+  margin: 0 0 var(--space-4) 0;
+}
+
+.recep-note {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  border-left: 3px solid var(--status-success);
+  font-size: var(--text-sm);
+}
+
+.recep-note strong {
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--text-primary);
+}
+
+.recep-note p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  line-height: var(--leading-relaxed);
+}
+
+/* ---- Table card ---- */
+.recep-table-card {
+  margin-top: var(--space-2);
+}
+
+.recep-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.recep-panel__actions {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.recep-search-input {
+  width: 240px;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.recep-search-input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--brand-blue-100);
+}
+
+.recep-id-cell,
+.recep-class-cell {
+  color: var(--brand-blue-700);
+}
+
+.recep-pending-due {
+  color: var(--status-danger);
+}
+
+.recep-pending-clear {
+  color: var(--status-success);
+}
+
+.recep-status-badge {
+  display: inline-block;
+  padding: 3px var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  text-transform: capitalize;
+}
+
+.recep-status-badge--active,
+.recep-status-badge--approved {
+  background: var(--status-success-bg);
+  color: var(--status-success);
+}
+
+.recep-status-badge--inactive,
+.recep-status-badge--pending {
+  background: var(--status-warning-bg);
+  color: var(--status-warning);
+}
+
+/* ---- Modal ---- */
+.recep-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 36, 48, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  z-index: var(--z-modal);
+}
+
+.recep-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+.recep-modal-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.recep-modal-close:hover {
+  background: var(--bg-muted);
+}
+
+.recep-modal-title {
+  font-size: var(--text-lg);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-5) 0;
+  padding-right: var(--space-8);
+}
+
+/* ---- Form layout ---- */
+.recep-form,
+.recep-fees-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.recep-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+@media (max-width: 560px) {
+  .recep-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.recep-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  text-align: left;
+}
+
+.recep-form-footer {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+  margin-top: var(--space-2);
+}
+
+.recep-form-banner {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  text-align: center;
+  font-weight: var(--font-medium);
+}
+
+.recep-form-banner--error {
+  background: var(--status-danger-bg);
+  color: var(--status-danger);
+  border: 1px solid var(--status-danger);
+}
+
+.recep-form-banner--success {
+  background: var(--status-success-bg);
+  color: var(--status-success);
+  border: 1px solid var(--status-success);
+}
+
+/* ---- Transactions scroll area ---- */
+.recep-transactions-scroll {
+  max-height: 350px;
+  overflow-y: auto;
+}

@@ -1,0 +1,267 @@
+/* ============================================================
+   LOGIN SCREEN — visual layer only
+   Lemon-yellow / pastel-gold premium school login.
+   Self-contained: does not depend on index.css login classes.
+   All .login-card / .login-form__* rules here take precedence
+   over the legacy .login-card defined in index.css because
+   this file is imported after index.css in App.jsx.
+============================================================ */
+
+/* ── Two-column page wrapper ─────────────────────────────────── */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  background: #FAF8F2;
+}
+
+/* ── Left column — school hero branding ─────────────────────── */
+.login-hero {
+  flex: 1.1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 64px 56px;
+  background: #FDFBF5;
+  border-right: 1px solid #EDE9DC;
+  position: relative;
+}
+
+/* Logo frame — white card with soft shadow */
+.login-hero__logo-frame {
+  width: 96px;
+  height: 96px;
+  background: #FFFFFF;
+  border: 1px solid #E4E0D2;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(28, 36, 48, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 28px;
+  padding: 8px;
+}
+
+/* Logo image — preserves aspect ratio, never stretched */
+.login-hero__logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.login-hero__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #14365E;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.login-hero__subtitle {
+  font-size: 1rem;
+  color: #4A5568;
+  margin: 0 0 36px 0;
+}
+
+.login-hero__points {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-hero__points li {
+  font-size: 0.875rem;
+  color: #4A5568;
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.5;
+}
+
+/* Muted gold bullet — ties visually to the yellow right panel */
+.login-hero__points li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #C9960C;
+}
+
+/* ── Right column — lemon-yellow login panel ─────────────────── */
+.login-panel {
+  flex: 0.85;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+  background: linear-gradient(
+    155deg,
+    #FFF9E0 0%,
+    #FFF0A0 35%,
+    #FFE55A 100%
+  );
+}
+
+/* ── Login card — white glass card on yellow panel ───────────── */
+/* Intentionally overrides .login-card stub in index.css */
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  background: rgba(255, 255, 255, 0.93);
+  border: 1px solid rgba(255, 255, 255, 0.70);
+  border-radius: 18px;
+  box-shadow:
+    0 4px 6px rgba(28, 36, 48, 0.04),
+    0 12px 32px rgba(28, 36, 48, 0.10);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 36px 32px;
+  text-align: left;
+}
+
+.login-card__header {
+  margin-bottom: 28px;
+}
+
+.login-card__title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #1C2430;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.01em;
+}
+
+.login-card__subtitle {
+  font-size: 0.875rem;
+  color: #4A5568;
+  margin: 0;
+}
+
+/* ── Login form ──────────────────────────────────────────────── */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-form__error {
+  background: #FEE6E6;
+  color: #B23A3A;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #B23A3A;
+}
+
+.login-form__group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: left;
+}
+
+.login-form__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1C2430;
+}
+
+/* Shared by login inputs AND dashboard modal form fields */
+.login-form__input {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.9375rem;
+  padding: 10px 14px;
+  border-radius: 9px;
+  border: 1px solid #D6D1C0;
+  background: #FFFFFF;
+  color: #1C2430;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.login-form__input::placeholder {
+  color: #9CA3AF;
+}
+
+.login-form__input:focus {
+  border-color: #1E4D8C;
+  box-shadow: 0 0 0 3px rgba(30, 77, 140, 0.12);
+}
+
+/* Select elements reusing this class in dashboard modal forms */
+select.login-form__input {
+  cursor: pointer;
+  appearance: auto;
+}
+
+/* Disabled state — used on Admission Number field when editing */
+.login-form__input:disabled {
+  background: #F5F3ED;
+  color: #7A8294;
+  cursor: not-allowed;
+}
+
+/* ── Submit button ───────────────────────────────────────────── */
+.login-form__submit {
+  margin-top: 4px;
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1C2430;
+  background: #F5C518;
+  border: 1px solid #C9960C;
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.15s ease,
+              transform 0.10s ease,
+              box-shadow 0.15s ease;
+}
+
+.login-form__submit:hover:not(:disabled) {
+  background: #FFD740;
+  box-shadow: 0 2px 8px rgba(197, 149, 12, 0.30);
+}
+
+.login-form__submit:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.login-form__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Footnote ────────────────────────────────────────────────── */
+.login-card__footnote {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #7A8294;
+}
+
+/* ── Responsive: stack vertically on narrow screens ─────────── */
+@media (max-width: 860px) {
+  .login-page {
+    flex-direction: column;
+  }
+
+  .login-hero {
+    padding: 40px 28px;
+    border-right: none;
+    border-bottom: 1px solid #EDE9DC;
+  }
+
+  .login-panel {
+    padding: 36px 20px 48px;
+  }
+}

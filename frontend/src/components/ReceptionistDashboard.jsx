@@ -11,6 +11,11 @@ import {
   FileText, 
   Search 
 } from 'lucide-react';
+import Card from './ui/Card';
+import StatCard from './ui/StatCard';
+import Button from './ui/Button';
+import DataTable from './ui/DataTable';
+import '../styles/ReceptionistDashboard.css';
 
 const ReceptionistDashboard = ({ currentView }) => {
   const { authenticatedFetch, API_URL } = useAuth();
@@ -269,88 +274,62 @@ const ReceptionistDashboard = ({ currentView }) => {
 
   if (currentView === 'dashboard') {
     return (
-      <div>
-        <div className="stats-grid">
-          <div className="stat-card glass-panel accent-green">
-            <div className="stat-info">
-              <span className="stat-label">Collections Today</span>
-              <span className="stat-val">₹{stats ? parseFloat(stats.total_payments_today).toLocaleString('en-IN') : '0'}</span>
-            </div>
-            <div className="stat-icon-wrapper"><DollarSign size={24} /></div>
-          </div>
-
-          <div className="stat-card glass-panel accent-cyan">
-            <div className="stat-info">
-              <span className="stat-label">Receipts Processed</span>
-              <span className="stat-val">{stats?.total_payments_count_today || 0}</span>
-            </div>
-            <div className="stat-icon-wrapper"><FileText size={24} /></div>
-          </div>
-
-          <div className="stat-card glass-panel accent-amber">
-            <div className="stat-info">
-              <span className="stat-label">Pending Hall Tickets</span>
-              <span className="stat-val">{stats?.pending_hall_ticket_approvals || 0}</span>
-            </div>
-            <div className="stat-icon-wrapper"><Ticket size={24} /></div>
-          </div>
+      <div className="recep-view">
+        <div className="recep-stats-grid stagger-reveal">
+          <StatCard
+            label="Collections Today"
+            value={`₹${stats ? parseFloat(stats.total_payments_today).toLocaleString('en-IN') : '0'}`}
+            icon={<DollarSign size={20} />}
+            tone="success"
+          />
+          <StatCard
+            label="Receipts Processed"
+            value={stats?.total_payments_count_today || 0}
+            icon={<FileText size={20} />}
+            tone="info"
+          />
+          <StatCard
+            label="Pending Hall Tickets"
+            value={stats?.pending_hall_ticket_approvals || 0}
+            icon={<Ticket size={20} />}
+            tone="warning"
+          />
         </div>
 
-        <div className="dashboard-grid">
-          <div className="data-panel glass-panel">
-            <div className="panel-header">
-              <h3 className="panel-title">Recent Payments Feed</h3>
-            </div>
-            <div className="table-wrapper">
-              <table className="custom-table">
-                <thead>
-                  <tr>
-                    <th>Receipt No</th>
-                    <th>Student</th>
-                    <th>Date</th>
-                    <th>Method</th>
-                    <th>Amount</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats?.recent_payments && stats.recent_payments.map((p) => (
-                    <tr key={p.id}>
-                      <td><strong style={{ color: 'var(--accent-cyan)' }}>{p.receipt_number}</strong></td>
-                      <td>{p.student_name}</td>
-                      <td>{p.payment_date}</td>
-                      <td>{p.payment_method}</td>
-                      <td>₹{parseFloat(p.amount_paid).toLocaleString('en-IN')}</td>
-                      <td>
-                        <button className="btn btn-secondary btn-sm" onClick={() => handleDownloadReceipt(p.id, p.receipt_number)}>
-                          PDF
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                  {(!stats?.recent_payments || stats.recent_payments.length === 0) && (
-                    <tr>
-                      <td colSpan="6" style={{ textAlign: 'center', padding: '16px', color: 'var(--text-muted)' }}>
-                        No payments logged today yet.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+        <div className="recep-dashboard-grid">
+          <Card elevated>
+            <h3 className="text-section-title recep-panel__title">Recent Payments Feed</h3>
+            <DataTable
+              columns={[
+                { key: 'receipt_number', header: 'Receipt No', render: (p) => <strong className="recep-id-cell">{p.receipt_number}</strong> },
+                { key: 'student_name', header: 'Student' },
+                { key: 'payment_date', header: 'Date' },
+                { key: 'payment_method', header: 'Method' },
+                { key: 'amount_paid', header: 'Amount', align: 'right', render: (p) => `₹${parseFloat(p.amount_paid).toLocaleString('en-IN')}` },
+                {
+                  key: 'action',
+                  header: 'Action',
+                  align: 'center',
+                  render: (p) => (
+                    <Button variant="outline" size="sm" onClick={() => handleDownloadReceipt(p.id, p.receipt_number)}>
+                      PDF
+                    </Button>
+                  ),
+                },
+              ]}
+              data={stats?.recent_payments || []}
+              rowKey="id"
+              emptyMessage="No payments logged today yet."
+            />
+          </Card>
 
-          <div className="data-panel glass-panel">
-            <div className="panel-header">
-              <h3 className="panel-title">Quick Tasks</h3>
+          <Card elevated>
+            <h3 className="text-section-title recep-panel__title">Quick Tasks</h3>
+            <div className="recep-note">
+              <strong>No Overlap Layouts</strong>
+              <p>All profile creations and billing logs are isolated in modals. Click any tab above to get started.</p>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '13px' }}>
-              <div style={{ padding: '12px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
-                <strong>No Overlap Layouts</strong>
-                <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>All profile creations and billing logs are isolated in modals. Click any tab above to get started.</p>
-              </div>
-            </div>
-          </div>
+          </Card>
         </div>
       </div>
     );
@@ -358,138 +337,98 @@ const ReceptionistDashboard = ({ currentView }) => {
 
   if (currentView === 'students') {
     return (
-      <div className="data-panel glass-panel">
-        <div className="panel-header">
-          <div>
-            <h3 className="panel-title">Student Admissions Desk</h3>
-            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Manage profile listings and new admissions.</span>
+      <div className="recep-view">
+        <Card elevated className="recep-table-card">
+          <div className="recep-panel__header">
+            <div>
+              <h3 className="text-section-title recep-panel__title">Student Admissions Desk</h3>
+              <span className="text-caption">Manage profile listings and new admissions.</span>
+            </div>
+            <div className="recep-panel__actions">
+              <input 
+                type="text" 
+                className="recep-search-input" 
+                placeholder="Search registry..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Button variant="primary" size="sm" onClick={handleOpenAddModal}>
+                <Plus size={16} /> New Student
+              </Button>
+            </div>
           </div>
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-            <input 
-              type="text" 
-              className="form-control" 
-              placeholder="Search registry..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ width: '240px', padding: '8px 12px' }}
-            />
-            <button className="btn btn-primary btn-sm" onClick={handleOpenAddModal}>
-              <Plus size={16} /> New Student
-            </button>
-          </div>
-        </div>
 
-        <div className="table-wrapper">
-          <table className="custom-table">
-            <thead>
-              <tr>
-                <th>Student ID</th>
-                <th>Admission No</th>
-                <th>Name</th>
-                <th>Class</th>
-                <th>Annual Fee</th>
-                <th>Total Paid</th>
-                <th>Pending Fee</th>
-                <th>Father's Name</th>
-                <th>Contact</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredStudents.map((s) => (
-  <tr key={s.id}>
-    <td>
-      <strong style={{ color: 'var(--accent-cyan)' }}>
-        {s.student_id}
-      </strong>
-    </td>
-
-    <td>{s.admission_number}</td>
-
-    <td>{s.name}</td>
-
-    <td>{s.class_name}</td>
-
-    <td>
-      ₹{parseFloat(s.annual_fee).toLocaleString('en-IN')}
-    </td>
-
-    <td>
-      ₹{parseFloat(s.total_paid || 0).toLocaleString('en-IN')}
-    </td>
-
-    <td
-      style={{
-        color: parseFloat(s.pending_fee || 0) > 0 ? '#ff6b6b' : '#51cf66',
-        fontWeight: 'bold'
-      }}
-    >
-      ₹{parseFloat(s.pending_fee || 0).toLocaleString('en-IN')}
-    </td>
-
-    <td>{s.father_name}</td>
-
-    <td>{s.contact_number}</td>
-
-    <td>
-      <span className={`status-badge status-${s.status}`}>
-        {s.status}
-      </span>
-    </td>
-
-    <td>
-      <button
-        className="btn btn-secondary btn-sm"
-        onClick={() => handleOpenEditModal(s)}
-        style={{ padding: '6px' }}
-        title="Edit"
-      >
-        <Edit size={14} />
-      </button>
-    </td>
-  </tr>
-))}
-              {filteredStudents.length === 0 && (
-                <tr>
-                  <td colSpan="9" style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
-                    No student profiles found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+          <DataTable
+            columns={[
+              { key: 'student_id', header: 'Student ID', render: (s) => <strong className="recep-id-cell">{s.student_id}</strong> },
+              { key: 'admission_number', header: 'Admission No' },
+              { key: 'name', header: 'Name' },
+              { key: 'class_name', header: 'Class' },
+              { key: 'annual_fee', header: 'Annual Fee', align: 'right', render: (s) => `₹${parseFloat(s.annual_fee).toLocaleString('en-IN')}` },
+              { key: 'total_paid', header: 'Total Paid', align: 'right', render: (s) => `₹${parseFloat(s.total_paid || 0).toLocaleString('en-IN')}` },
+              {
+                key: 'pending_fee',
+                header: 'Pending Fee',
+                align: 'right',
+                render: (s) => (
+                  <strong className={parseFloat(s.pending_fee || 0) > 0 ? 'recep-pending-due' : 'recep-pending-clear'}>
+                    ₹{parseFloat(s.pending_fee || 0).toLocaleString('en-IN')}
+                  </strong>
+                ),
+              },
+              { key: 'father_name', header: "Father's Name" },
+              { key: 'contact_number', header: 'Contact' },
+              {
+                key: 'status',
+                header: 'Status',
+                render: (s) => <span className={`recep-status-badge recep-status-badge--${s.status}`}>{s.status}</span>,
+              },
+              {
+                key: 'action',
+                header: 'Action',
+                align: 'center',
+                render: (s) => (
+                  <Button variant="outline" size="sm" onClick={() => handleOpenEditModal(s)} title="Edit">
+                    <Edit size={14} />
+                  </Button>
+                ),
+              },
+            ]}
+            data={filteredStudents}
+            rowKey="id"
+            emptyMessage="No student profiles found."
+          />
+        </Card>
 
         {/* POPUP MODAL */}
         {showFormModal && (
-          <div className="modal-overlay">
-            <div className="modal-content glass-panel">
-              <button className="modal-close" onClick={() => setShowFormModal(false)}>
+          <div className="recep-modal-overlay">
+            <Card elevated className="recep-modal-content">
+              <button className="recep-modal-close" onClick={() => setShowFormModal(false)}>
                 <X size={20} />
               </button>
-              <h3 style={{ marginBottom: '24px', color: 'var(--accent-cyan)' }}>
+              <h3 className="recep-modal-title">
                 {editingStudent ? `Modify Student Details: ${editingStudent.student_id}` : 'Admit New Student'}
               </h3>
               
-              <form onSubmit={handleFormSubmit}>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Admission Number</label>
+              <form onSubmit={handleFormSubmit} className="recep-form">
+                <div className="recep-form-row">
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Admission Number</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.admission_number}
                       onChange={(e) => setStudentForm({...studentForm, admission_number: e.target.value})}
                       required
                       disabled={editingStudent}
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Student Name</label>
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Student Name</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.name}
                       onChange={(e) => setStudentForm({...studentForm, name: e.target.value})}
                       required
@@ -497,21 +436,21 @@ const ReceptionistDashboard = ({ currentView }) => {
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Date of Birth</label>
+                <div className="recep-form-row">
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Date of Birth</label>
                     <input 
                       type="date" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.date_of_birth}
                       onChange={(e) => setStudentForm({...studentForm, date_of_birth: e.target.value})}
                       required
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Gender</label>
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Gender</label>
                     <select 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.gender}
                       onChange={(e) => setStudentForm({...studentForm, gender: e.target.value})}
                     >
@@ -522,22 +461,22 @@ const ReceptionistDashboard = ({ currentView }) => {
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Father's Name</label>
+                <div className="recep-form-row">
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Father's Name</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.father_name}
                       onChange={(e) => setStudentForm({...studentForm, father_name: e.target.value})}
                       required
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Mother's Name</label>
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Mother's Name</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.mother_name}
                       onChange={(e) => setStudentForm({...studentForm, mother_name: e.target.value})}
                       required
@@ -545,33 +484,33 @@ const ReceptionistDashboard = ({ currentView }) => {
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Address</label>
+                <div className="recep-form-group">
+                  <label className="login-form__label">Address</label>
                   <input 
                     type="text" 
-                    className="form-control" 
+                    className="login-form__input" 
                     value={studentForm.address}
                     onChange={(e) => setStudentForm({...studentForm, address: e.target.value})}
                     required
                   />
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Contact Number</label>
+                <div className="recep-form-row">
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Contact Number</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.contact_number}
                       onChange={(e) => setStudentForm({...studentForm, contact_number: e.target.value})}
                       required
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Emergency Contact</label>
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Emergency Contact</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.emergency_contact}
                       onChange={(e) => setStudentForm({...studentForm, emergency_contact: e.target.value})}
                       required
@@ -579,43 +518,43 @@ const ReceptionistDashboard = ({ currentView }) => {
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Bus Number (Optional)</label>
+                <div className="recep-form-row">
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Bus Number (Optional)</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.bus_number}
                       onChange={(e) => setStudentForm({...studentForm, bus_number: e.target.value})}
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Bus Route (Optional)</label>
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Bus Route (Optional)</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.bus_route}
                       onChange={(e) => setStudentForm({...studentForm, bus_route: e.target.value})}
                     />
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Annual Tuition Fee (₹)</label>
+                <div className="recep-form-row">
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Annual Tuition Fee (₹)</label>
                     <input 
                       type="number" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.annual_fee}
                       onChange={(e) => setStudentForm({...studentForm, annual_fee: e.target.value})}
                       required
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Family ID</label>
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Family ID</label>
                     <input 
                       type="text" 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.family_id}
                       onChange={(e) => setStudentForm({...studentForm, family_id: e.target.value})}
                       required
@@ -623,11 +562,11 @@ const ReceptionistDashboard = ({ currentView }) => {
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Class</label>
+                <div className="recep-form-row">
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Class</label>
                     <select 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.class_id}
                       onChange={(e) => setStudentForm({...studentForm, class_id: e.target.value})}
                       required
@@ -637,10 +576,10 @@ const ReceptionistDashboard = ({ currentView }) => {
                       ))}
                     </select>
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Status</label>
+                  <div className="recep-form-group">
+                    <label className="login-form__label">Status</label>
                     <select 
-                      className="form-control" 
+                      className="login-form__input" 
                       value={studentForm.status}
                       onChange={(e) => setStudentForm({...studentForm, status: e.target.value})}
                     >
@@ -650,22 +589,22 @@ const ReceptionistDashboard = ({ currentView }) => {
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Student Photo URL (Optional)</label>
+                <div className="recep-form-group">
+                  <label className="login-form__label">Student Photo URL (Optional)</label>
                   <input 
                     type="text" 
-                    className="form-control" 
+                    className="login-form__input" 
                     value={studentForm.photo_url}
                     onChange={(e) => setStudentForm({...studentForm, photo_url: e.target.value})}
                   />
                 </div>
 
-                <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '24px' }}>
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowFormModal(false)}>Cancel</button>
-                  <button type="submit" className="btn btn-primary">Save Profile</button>
+                <div className="recep-form-footer">
+                  <Button type="button" variant="outline" onClick={() => setShowFormModal(false)}>Cancel</Button>
+                  <Button type="submit" variant="primary">Save Profile</Button>
                 </div>
               </form>
-            </div>
+            </Card>
           </div>
         )}
       </div>
@@ -674,118 +613,112 @@ const ReceptionistDashboard = ({ currentView }) => {
 
   if (currentView === 'fees') {
     return (
-      <div className="dashboard-grid">
-        <div className="data-panel glass-panel">
-          <div className="panel-header">
-            <h3 className="panel-title">Collect Tuition Fee</h3>
-          </div>
-          
-          <form onSubmit={handleCollectPayment}>
-            {payError && (
-              <div className="status-badge status-inactive" style={{ width: '100%', marginBottom: '16px', padding: '8px', textAlign: 'center' }}>
-                {payError}
-              </div>
-            )}
-            {paySuccess && (
-              <div className="status-badge status-active" style={{ width: '100%', marginBottom: '16px', padding: '8px', textAlign: 'center' }}>
-                {paySuccess}
-              </div>
-            )}
+      <div className="recep-view">
+        <div className="recep-fees-grid">
+          <Card elevated>
+            <h3 className="text-section-title recep-panel__title">Collect Tuition Fee</h3>
+            
+            <form onSubmit={handleCollectPayment} className="recep-fees-form">
+              {payError && (
+                <div className="recep-form-banner recep-form-banner--error">
+                  {payError}
+                </div>
+              )}
+              {paySuccess && (
+                <div className="recep-form-banner recep-form-banner--success">
+                  {paySuccess}
+                </div>
+              )}
 
-            <div className="form-group">
-              <label className="form-label">Student</label>
-              <select 
-                className="form-control" 
-                value={collectingStudent}
-                onChange={(e) => {
-                  setCollectingStudent(e.target.value);
-                  setPayError(null);
-                  setPaySuccess(null);
-                }}
-                required
-              >
-                <option value="">-- Select Student --</option>
-                {students.map(s => (
-                  <option key={s.id} value={s.id}>{s.name} ({s.student_id})</option>
-                ))}
-              </select>
-            </div>
+              <div className="recep-form-group">
+                <label className="login-form__label">Student</label>
+                <select 
+                  className="login-form__input" 
+                  value={collectingStudent}
+                  onChange={(e) => {
+                    setCollectingStudent(e.target.value);
+                    setPayError(null);
+                    setPaySuccess(null);
+                  }}
+                  required
+                >
+                  <option value="">-- Select Student --</option>
+                  {students.map(s => (
+                    <option key={s.id} value={s.id}>{s.name} ({s.student_id})</option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label className="form-label">Amount (₹)</label>
+              <div className="recep-form-row">
+                <div className="recep-form-group">
+                  <label className="login-form__label">Amount (₹)</label>
+                  <input 
+                    type="number" 
+                    className="login-form__input" 
+                    value={paymentAmount}
+                    onChange={(e) => setPaymentAmount(e.target.value)}
+                    placeholder="Enter amount"
+                    required
+                  />
+                </div>
+
+                <div className="recep-form-group">
+                  <label className="login-form__label">Payment Method</label>
+                  <select 
+                    className="login-form__input" 
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                  >
+                    <option value="Cash">Cash</option>
+                    <option value="Card">Card</option>
+                    <option value="Online">Online</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="recep-form-group">
+                <label className="login-form__label">Payment Date</label>
                 <input 
-                  type="number" 
-                  className="form-control" 
-                  value={paymentAmount}
-                  onChange={(e) => setPaymentAmount(e.target.value)}
-                  placeholder="Enter amount"
+                  type="date" 
+                  className="login-form__input" 
+                  value={paymentDate}
+                  onChange={(e) => setPaymentDate(e.target.value)}
                   required
                 />
               </div>
 
-              <div className="form-group">
-                <label className="form-label">Payment Method</label>
-                <select 
-                  className="form-control" 
-                  value={paymentMethod}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                >
-                  <option value="Cash">Cash</option>
-                  <option value="Card">Card</option>
-                  <option value="Online">Online</option>
-                </select>
-              </div>
-            </div>
+              <Button type="submit" variant="primary" fullWidth>
+                Process Payment
+              </Button>
+            </form>
+          </Card>
 
-            <div className="form-group">
-              <label className="form-label">Payment Date</label>
-              <input 
-                type="date" 
-                className="form-control" 
-                value={paymentDate}
-                onChange={(e) => setPaymentDate(e.target.value)}
-                required
+          <Card elevated>
+            <h3 className="text-section-title recep-panel__title">Recent Transactions Ledger</h3>
+            
+            <div className="recep-transactions-scroll">
+              <DataTable
+                columns={[
+                  { key: 'receipt_number', header: 'Receipt No', render: (p) => <strong>{p.receipt_number}</strong> },
+                  { key: 'student_name', header: 'Student' },
+                  { key: 'amount_paid', header: 'Amount', align: 'right', render: (p) => `₹${parseFloat(p.amount_paid).toLocaleString('en-IN')}` },
+                  {
+                    key: 'action',
+                    header: 'Action',
+                    align: 'center',
+                    render: (p) => (
+                      <Button variant="outline" size="sm" onClick={() => handleDownloadReceipt(p.id, p.receipt_number)}>
+                        PDF
+                      </Button>
+                    ),
+                  },
+                ]}
+                data={payments}
+                rowKey="id"
+                emptyMessage="No transactions recorded yet."
               />
             </div>
-
-            <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
-              Process Payment
-            </button>
-          </form>
-        </div>
-
-        <div className="data-panel glass-panel">
-          <div className="panel-header">
-            <h3 className="panel-title">Recent Transactions Ledger</h3>
-          </div>
-          
-          <div className="table-wrapper" style={{ maxHeight: '350px', overflowY: 'auto' }}>
-            <table className="custom-table" style={{ fontSize: '12px' }}>
-              <thead>
-                <tr>
-                  <th>Receipt No</th>
-                  <th>Student</th>
-                  <th>Amount</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {payments.map(p => (
-                  <tr key={p.id}>
-                    <td><strong>{p.receipt_number}</strong></td>
-                    <td>{p.student_name}</td>
-                    <td>₹{parseFloat(p.amount_paid).toLocaleString('en-IN')}</td>
-                    <td>
-                      <button className="btn btn-secondary btn-sm" onClick={() => handleDownloadReceipt(p.id, p.receipt_number)}>
-                        PDF
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          </Card>
         </div>
       </div>
     );
@@ -793,70 +726,62 @@ const ReceptionistDashboard = ({ currentView }) => {
 
   if (currentView === 'tickets') {
     return (
-      <div className="data-panel glass-panel">
-        <div className="panel-header">
-          <div>
-            <h3 className="panel-title">Examination Hall Ticket Approvals</h3>
-            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Verify student dues and issue exam clearance.</span>
+      <div className="recep-view">
+        <Card elevated className="recep-table-card">
+          <div className="recep-panel__header">
+            <div>
+              <h3 className="text-section-title recep-panel__title">Examination Hall Ticket Approvals</h3>
+              <span className="text-caption">Verify student dues and issue exam clearance.</span>
+            </div>
           </div>
-        </div>
 
-        <div className="table-wrapper">
-          <table className="custom-table">
-            <thead>
-              <tr>
-                <th>Student ID</th>
-                <th>Name</th>
-                <th>Class Number</th>
-                <th>Tuition Fee</th>
-                <th>Status</th>
-                <th>Hall Ticket Clearance</th>
-                <th>Download</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((s) => {
-                // Determine balance (virtual calculations or we could fetch status for each - let's render standard toggles)
-                // For simplicity, we can trust the database fields
-                return (
-                  <tr key={s.id}>
-                    <td><strong>{s.student_id}</strong></td>
-                    <td>{s.name}</td>
-                    <td><strong style={{ color: 'var(--accent-purple)' }}>{s.class_name || s.class_id}</strong></td>
-                    <td>₹{parseFloat(s.annual_fee).toLocaleString('en-IN')}</td>
-                    <td>
-                      <span className={`status-badge ${s.hall_ticket_approved ? 'status-approved' : 'status-pending'}`}>
-                        {s.hall_ticket_approved ? 'Approved' : 'Dues Pending / Locked'}
-                      </span>
-                    </td>
-                    <td>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        {!s.hall_ticket_approved ? (
-                          <button className="btn btn-primary btn-sm" onClick={() => handleToggleHallTicket(s.id, true)}>
-                            Approve exam
-                          </button>
-                        ) : (
-                          <button className="btn btn-danger btn-sm" onClick={() => handleToggleHallTicket(s.id, false)}>
-                            Revoke
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                    <td>
-                      {s.hall_ticket_approved ? (
-                        <button className="btn btn-secondary btn-sm" onClick={() => handleDownloadHallTicket(s.id)}>
-                          Download PDF
-                        </button>
-                      ) : (
-                        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Locked</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+          <DataTable
+            columns={[
+              { key: 'student_id', header: 'Student ID', render: (s) => <strong>{s.student_id}</strong> },
+              { key: 'name', header: 'Name' },
+              { key: 'class_name', header: 'Class Number', render: (s) => <strong className="recep-class-cell">{s.class_name || s.class_id}</strong> },
+              { key: 'annual_fee', header: 'Tuition Fee', align: 'right', render: (s) => `₹${parseFloat(s.annual_fee).toLocaleString('en-IN')}` },
+              {
+                key: 'status',
+                header: 'Status',
+                render: (s) => (
+                  <span className={`recep-status-badge ${s.hall_ticket_approved ? 'recep-status-badge--approved' : 'recep-status-badge--pending'}`}>
+                    {s.hall_ticket_approved ? 'Approved' : 'Dues Pending / Locked'}
+                  </span>
+                ),
+              },
+              {
+                key: 'clearance',
+                header: 'Hall Ticket Clearance',
+                render: (s) =>
+                  !s.hall_ticket_approved ? (
+                    <Button variant="primary" size="sm" onClick={() => handleToggleHallTicket(s.id, true)}>
+                      Approve exam
+                    </Button>
+                  ) : (
+                    <Button variant="danger" size="sm" onClick={() => handleToggleHallTicket(s.id, false)}>
+                      Revoke
+                    </Button>
+                  ),
+              },
+              {
+                key: 'download',
+                header: 'Download',
+                render: (s) =>
+                  s.hall_ticket_approved ? (
+                    <Button variant="outline" size="sm" onClick={() => handleDownloadHallTicket(s.id)}>
+                      Download PDF
+                    </Button>
+                  ) : (
+                    <span className="text-caption">Locked</span>
+                  ),
+              },
+            ]}
+            data={students}
+            rowKey="id"
+            emptyMessage="No students found."
+          />
+        </Card>
       </div>
     );
   }
