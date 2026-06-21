@@ -119,6 +119,8 @@ Railway is another excellent hosting provider for PostgreSQL and FastAPI.
 <img width="1918" height="912" alt="Screenshot 2026-06-20 190139" src="https://github.com/user-attachments/assets/7024251e-94e2-4c0a-a2cd-6ee20b67e415" />
 <img width="1893" height="882" alt="Screenshot 2026-06-20 190107" src="https://github.com/user-attachments/assets/b4dc8f4c-cff6-4e51-b6d6-08df92d9c327" />
 <img width="1882" height="900" alt="Screenshot 2026-06-20 190003" src="https://github.com/user-attachments/assets/10c6322b-3f51-47f6-b0de-6cd778952397" />
+<img width="1882" height="953" alt="Screenshot 2026-06-21 153648" src="https://github.com/user-attachments/assets/26dbd3c2-4a21-4bf6-a1a3-5015259c876d" />
+
 
 
 
