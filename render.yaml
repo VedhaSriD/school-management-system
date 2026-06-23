@@ -1,5 +1,4 @@
 services:
-  # Backend Web Service
   - type: web
     name: vedha-school-backend
     env: python
@@ -13,26 +12,9 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: GEMINI_API_KEY
-        sync: false # Set manually in Render dashboard
+        sync: false
       - key: ENVIRONMENT
         value: production
-
-  # Frontend Static Site
-  - type: web
-    name: vedha-school-frontend
-    env: static
-    buildCommand: cd frontend && npm install && npm run build
-    publishPath: frontend/dist
-    headers:
-      - path: /*
-        name: Cache-Control
-        value: max-age=0, no-cache, no-store, must-revalidate
-    envVars:
-      - key: VITE_API_URL
-        fromService:
-          type: web
-          name: vedha-school-backend
-          property: host
 
 databases:
   - name: vedha-school-db
